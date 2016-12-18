@@ -4,9 +4,6 @@ var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 var path = require('path')
 // var _ = require('lodash')
-var moment = require('moment')
-var ApiV1 = '/api/v1'
-var nasihatCol = require('./nasihat_col.js')
 var config = require('./config.js')
 
 // TODO handle error on /api/v1 route
@@ -27,158 +24,10 @@ app.use(express.static(path.join(__dirname, '/public')))
 app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'pug')
 
-/**
- * Homepage route
- * Show a quote for today with next and previous link
- * Today quote is determined by data in cookie/localstorage
- */
-app.get('/', function (req, res) {
-  console.log('show a quote for today')
-
-  var todayId
-  var todayDate = moment().format('YYYY-MM-DD')
-  console.log(todayDate)
-
-  // Show next quote compare to yesterday
-  var lastQuoteId = req.cookies.lastQuoteId
-  var lastDayQuote = req.cookies.lastDayQuote // date when last quote shown
-
-  if (!lastQuoteId) {
-    // For first time user or first time device
-    console.log('1st time user')
-
-    todayId = 1
-    res.cookie('lastQuoteId', 1)
-    res.cookie('lastDayQuote', todayDate)
-  } else {
-    // Repeated user
-    console.log('Repeated user')
-
-    if (moment(lastDayQuote).isSame(todayDate)) {
-      // Repeated user on same day get same quote as last shown
-      todayId = parseInt(lastQuoteId)
-      console.log('Repeated user same day')
-    } else {
-      // Repeated user different day get to see next quote compared to last shown
-      todayId = parseInt(lastQuoteId) + 1
-
-      res.cookie('lastQuoteId', todayId)
-      res.cookie('lastDayQuote', todayDate)
-
-      console.log('Repeated user different day')
-    }
-  }
-
-  console.log('today quote id = ' + todayId)
-
-  // get quote from database
-  nasihatCol.getNasihatById(todayId, function (err, nasihat) {
-    // TODO if err to next error page
-    if (err) console.log('ERROR: ' + err.message)
-
-    // render page
-    res.render('homepage', {
-      title: 'Nasihat',
-      quoteId: todayId,
-      quote: nasihat.text,
-      source: nasihat.source
-    })
-  })
-})
-
-/**
- * Block all api until authentication/authorization added
- * TODO add auth guna passportjs then delete this preventation
- */
-app.use(ApiV1, function (req, res, next) {
-  console.log('Block temporary')
-  res.status(403)
-  res.send('403 Forbidden')
-})
-
-/*
- * API routes
- */
-app.get(ApiV1 + '/nasihat/:id', function (req, res) {
-  var id = req.params['id']
-
-  console.log('show nasihat at id ' + id)
-
-  nasihatCol.getNasihatById(parseInt(id), function (err, nasihat) {
-    if (err) console.log('miaw')
-    res.json(nasihat)
-  })
-})
-
-app.put(ApiV1 + '/nasihat/:id', function (req, res) {
-  var id = req.params['id']
-
-  console.log('update nasihat at id ' + id)
-
-  nasihatCol.updateNasihatById(parseInt(id), req.body, function (err, data) {
-    if (err) throw err
-
-    res.json(data)
-  })
-})
-
-app.post(ApiV1 + '/nasihat/', function (req, res) {
-  console.log('create new nasihat')
-
-  nasihatCol.createNasihat(req.body, function (err, data) {
-    if (err) throw err
-
-    res.json(data)
-  })
-})
-
-app.delete(ApiV1 + '/nasihat/:id', function (req, res) {
-  var id = req.params['id']
-
-  console.log('delete nasihat at id ' + id)
-
-  nasihatCol.deleteNasihat(id, function (err, data) {
-    if (err) throw err
-
-    res.json(data)
-  })
-})
-
-/**
- * Get next nasihat
- */
-app.get('/nasihat/next/:id', function (req, res) {
-  var id = parseInt(req.params['id'])
-
-  console.log('get next nasihat for id ' + id)
-
-  nasihatCol.getNextNasihatForId(id, function (err, data) {
-    if (err) throw err
-
-    // TODO: fix if last element AND no more next
-
-    console.log(data)
-    res.json(data)
-  })
-})
-
-/**
- * Get prev nasihat
- */
-app.get('/nasihat/prev/:id', function (req, res) {
-  var id = parseInt(req.params['id'])
-
-  console.log('get prev nasihat for id ' + id)
-
-  nasihatCol.getPrevNasihatForId(id, function (err, data) {
-    if (err) throw err
-
-    // if last element AND no more next
-
-    console.log(data)
-    res.json(data)
-  })
-})
+// Routes
+app.use('/', require('./routes/index'))
+app.use('/api/v1/nasihat', require('./routes/api/v1/nasihat.js'))
+app.use('/nasihat', require('./routes/nasihat.js'))
 
 // development error handler
 // will print stacktrace
