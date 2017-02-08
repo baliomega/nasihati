@@ -15,8 +15,8 @@ Homepage:
   ✔ Next navigation to show next nasihat in database - show on same homepage, get data by ajax - maybe bad for SEO, but do not care @done (16-11-02 03:57)
   ✔ Prev navigation to show previous nasihat in database - show on same homepage, get data by ajax - maybe bad for SEO, but do not care @done (16-11-02 07:21)
 
-  About modal: 
-    ☐ write why I create this page 
+  About modal:
+    ☐ write why I create this page
     ☐ how I create the page - from old Nasihat with Laravel, DaeiBot then this website
     ☐ how I manage this website - what is my rule - quran n sahih hadith only - I write on my own not going to give others to write
     ☐ credits for inspirational designers see above - credits for quran.com and others website that i use to get quran n hadith terjemahan - youtube channel media tajdid, sunnah, ilmu salaf, dr fathul bari (fokas)
@@ -26,9 +26,15 @@ Homepage:
 
   NasihatBot modal:
     ☐ what is this - write what nasihat bot do - auto send nasihat daily
-    ☐ how to use - write how to add bot in Telegram - a link to telegram.me/bot is enough 
+    ☐ how to use - write how to add bot in Telegram - a link to telegram.me/bot is enough
     ☐ why? - because we always forgot to see website
     ☐ other feature of NasihatBot - mostly only sent nasihat text, sometime (randomly and every Friday) send nasihat image (image with quote text - beautiful)
     ☐ other feature of NasihatBot - accept users submit image then used make it CC0 (public domain) use as image for nasihat. Also use in my photos collection website.
 
-    
+UI/UX Improvement:
+  ☐ Change to more suitable icons
+  ☐ Fix the responsive view in desktop, tablet & mobile
+  ☐ Check the design consistency in all platforms
+  ☐ Improve the menu & modal behavior
+  ☐ Add more beautiful scenery images for the background
+  ☐ Search for beautiful typography
